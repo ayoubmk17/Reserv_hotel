@@ -1,0 +1,12 @@
+<!-- hotel_app/templates/hotel_app/hotel_form.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Créer un nouvel hôtel</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Affiche les champs du formulaire -->
+    <button type="submit">Créer l'hôtel</button>
+  </form>
+  <a href="{% url 'hotel-list' %}">Retour à la liste des hôtels</a>
+{% endblock %}

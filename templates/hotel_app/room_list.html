@@ -1,0 +1,14 @@
+<!-- hotel_app/templates/hotel_app/room_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Liste des Chambres</h1>
+  <ul>
+    {% for room in rooms %}
+      <li>
+        <a href="{% url 'room-detail' room.pk %}">{{ room.room_number }} - {{ room.room_type.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'room-create' %}">Ajouter une chambre</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+<!-- hotel_app/templates/hotel_app/hotel_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ hotel.name }}</h1>
+  <p><strong>Description :</strong> {{ hotel.description }}</p>
+  <p><strong>Adresse :</strong> {{ hotel.address }}</p>
+  <p><strong>Ville :</strong> {{ hotel.city }}</p>
+  <p><strong>Pays :</strong> {{ hotel.country }}</p>
+  <p><strong>Email :</strong> {{ hotel.email }}</p>
+  <p><strong>Téléphone :</strong> {{ hotel.phone }}</p>
+  <a href="{% url 'hotel-list' %}">Retour à la liste des hôtels</a>
+{% endblock %}

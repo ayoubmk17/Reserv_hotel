@@ -1,0 +1,10 @@
+<!-- hotel_app/templates/hotel_app/room_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Détails de la chambre {{ room.room_number }}</h1>
+  <p><strong>Type de chambre :</strong> {{ room.room_type.name }}</p>
+  <p><strong>Hôtel :</strong> {{ room.hotel.name }}</p>
+  <p><strong>Prix par nuit :</strong> {{ room.price_per_night }} €</p>
+  <a href="{% url 'room-list' %}">Retour à la liste des chambres</a>
+{% endblock %}

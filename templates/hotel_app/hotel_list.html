@@ -1,0 +1,14 @@
+<!-- hotel_app/templates/hotel_app/hotel_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Liste des Hôtels</h1>
+  <ul>
+    {% for hotel in hotels %}
+      <li>
+        <a href="{% url 'hotel-detail' hotel.pk %}">{{ hotel.name }}</a> - {{ hotel.city }}
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'hotel-create' %}">Créer un nouvel hôtel</a>
+{% endblock %}
