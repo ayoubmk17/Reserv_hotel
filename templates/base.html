@@ -1,19 +1,169 @@
 <!-- templates/base.html -->
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Réservation Hôtel{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Ajout de Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #003366;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        nav {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        nav .login-btn {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #ff5a5f;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav .login-btn:hover {
+            background-color: #ff1d25;
+        }
+        nav .login-btn i {
+            margin-right: 8px;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .search-section {
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .search-section input, .search-section button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-section button {
+            background-color: #ff5a5f;
+            color: white;
+            cursor: pointer;
+        }
+        .search-section button:hover {
+            background-color: #ff1d25;
+        }
+        .hotel-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .hotel-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: calc(33% - 20px);
+            margin-bottom: 20px;
+        }
+        .hotel-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .hotel-card .content {
+            padding: 15px;
+        }
+        .hotel-card .content h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .hotel-card .content p {
+            font-size: 14px;
+            color: #777;
+            margin: 10px 0;
+        }
+        footer {
+            background-color: #003366;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hotel-card {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .hotel-card {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav>
-            <a href="{% url 'home' %}">Accueil</a>
-            <a href="/admin">Admin</a>
+            <a href="/hotels/">Hôtels</a>
+            <a href="/rooms/">Chambres</a>
+            <a href="/contact/">Contact</a>
+            <!-- Bouton de connexion avec icône -->
+            <a href="/login/" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Se connecter
+            </a>
         </nav>
     </header>
-    
-    <main>
+
+    <main class="container">
+        <section class="search-section">
+            <input type="text" placeholder="Recherche un hôtel...">
+            <input type="date">
+            <button>Rechercher</button>
+        </section>
+
         {% block content %}{% endblock %}
     </main>
+
+    <footer>
+        <p>&copy; 2025 Réservation Hôtel. Tous droits réservés.</p>
+    </footer>
 </body>
 </html>

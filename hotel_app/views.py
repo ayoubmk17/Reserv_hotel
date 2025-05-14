@@ -51,3 +51,7 @@ def room_detail(request, pk):
     }
     
     return render(request, 'hotel_app/room_detail.html', context)
+
+
+def home(request):
+    return render(request,'home.html')
