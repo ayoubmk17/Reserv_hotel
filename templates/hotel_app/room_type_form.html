@@ -1,0 +1,129 @@
+<!-- hotel_app/templates/hotel_app/room_type_form.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <h1 style="color: #003366; margin-bottom: 30px; text-align: center;">{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} un type de chambre</h1>
+
+    {% if messages %}
+    <div class="messages" style="margin-bottom: 20px;">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+             style="padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST" style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        {% csrf_token %}
+        
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="{{ form.hotel.id_for_label }}" style="display: block; margin-bottom: 5px; color: #666;">Hôtel</label>
+            {{ form.hotel }}
+            {% if form.hotel.errors %}
+            <div class="error-message" style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.hotel.errors }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="{{ form.name.id_for_label }}" style="display: block; margin-bottom: 5px; color: #666;">Type de chambre</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+            <div class="error-message" style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.name.errors }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="{{ form.description.id_for_label }}" style="display: block; margin-bottom: 5px; color: #666;">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+            <div class="error-message" style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.description.errors }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="{{ form.base_price.id_for_label }}" style="display: block; margin-bottom: 5px; color: #666;">Prix de base</label>
+            {{ form.base_price }}
+            {% if form.base_price.errors %}
+            <div class="error-message" style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.base_price.errors }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="{{ form.capacity.id_for_label }}" style="display: block; margin-bottom: 5px; color: #666;">Capacité</label>
+            {{ form.capacity }}
+            {% if form.capacity.errors %}
+            <div class="error-message" style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.capacity.errors }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="{{ form.amenities.id_for_label }}" style="display: block; margin-bottom: 5px; color: #666;">Équipements</label>
+            {{ form.amenities }}
+            {% if form.amenities.errors %}
+            <div class="error-message" style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                {{ form.amenities.errors }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions" style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+            <a href="{% url 'room-type-list' %}" class="btn-cancel" style="background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;">
+                <i class="fas fa-times"></i> Annuler
+            </a>
+            <button type="submit" class="btn-submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+                <i class="fas fa-save"></i> Enregistrer
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Style des champs de formulaire */
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #003366;
+        box-shadow: 0 0 0 2px rgba(0,51,102,0.2);
+    }
+
+    /* Style des boutons */
+    .btn-cancel:hover {
+        background-color: #5a6268 !important;
+    }
+
+    .btn-submit:hover {
+        background-color: #218838 !important;
+    }
+</style>
+{% endblock %} 

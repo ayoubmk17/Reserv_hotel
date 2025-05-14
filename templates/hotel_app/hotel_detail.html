@@ -2,12 +2,298 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ hotel.name }}</h1>
-  <p><strong>Description :</strong> {{ hotel.description }}</p>
-  <p><strong>Adresse :</strong> {{ hotel.address }}</p>
-  <p><strong>Ville :</strong> {{ hotel.city }}</p>
-  <p><strong>Pays :</strong> {{ hotel.country }}</p>
-  <p><strong>Email :</strong> {{ hotel.email }}</p>
-  <p><strong>Téléphone :</strong> {{ hotel.phone }}</p>
-  <a href="{% url 'hotel-list' %}">Retour à la liste des hôtels</a>
+<div class="hotel-detail-container">
+    <div class="hotel-header">
+        <div class="hotel-title">
+            <h1>{{ hotel.name }}</h1>
+            <p class="hotel-location">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ hotel.city }}, {{ hotel.country }}
+            </p>
+        </div>
+        <div class="header-actions">
+            {% if user.is_authenticated and user.role == 1 %}
+            <a href="{% url 'create-booking' hotel.pk %}" class="book-now-btn">
+                <i class="fas fa-calendar-check"></i> Réserver maintenant
+            </a>
+            {% endif %}
+            {% if user.is_authenticated and user == hotel.owner %}
+            <div class="owner-actions">
+                <a href="{% url 'hotel-update' hotel.pk %}" class="edit-btn">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a href="{% url 'hotel-delete' hotel.pk %}" class="delete-btn">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="hotel-content">
+        <div class="hotel-main-info">
+            {% if hotel.image %}
+            <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" class="hotel-image">
+            {% else %}
+            <img src="https://via.placeholder.com/800x400?text=Hotel+Image" alt="{{ hotel.name }}" class="hotel-image">
+            {% endif %}
+            
+            <div class="hotel-description">
+                <h2>Description</h2>
+                <p>{{ hotel.description }}</p>
+            </div>
+        </div>
+
+        <div class="hotel-details">
+            <div class="info-card">
+                <h3>Informations de contact</h3>
+                <p><i class="fas fa-envelope"></i> {{ hotel.email }}</p>
+                <p><i class="fas fa-phone"></i> {{ hotel.phone }}</p>
+                <p><i class="fas fa-map-marked-alt"></i> {{ hotel.address }}</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Types de chambres disponibles</h3>
+                {% for room_type in room_types %}
+                <div class="room-type-item">
+                    <div class="room-type-info">
+                        <h4>{{ room_type.get_name_display }}</h4>
+                        <p>{{ room_type.description }}</p>
+                        <p class="capacity"><i class="fas fa-user"></i> {{ room_type.capacity }} personne(s)</p>
+                    </div>
+                    <div class="room-type-price">
+                        <span>{{ room_type.base_price }}€</span>
+                        <small>/ nuit</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'hotel-list' %}">
+            <i class="fas fa-arrow-left"></i> Retour à la liste des hôtels
+        </a>
+    </div>
+</div>
+
+<style>
+    .hotel-detail-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .hotel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 30px;
+    }
+
+    .hotel-title h1 {
+        color: #003366;
+        margin: 0 0 10px;
+        font-size: 2.5em;
+    }
+
+    .hotel-location {
+        color: #666;
+        font-size: 1.2em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .book-now-btn {
+        background-color: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        transition: background-color 0.3s;
+    }
+
+    .book-now-btn:hover {
+        background-color: #218838;
+        color: white;
+    }
+
+    .owner-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+        padding: 10px 20px;
+        border-radius: 4px;
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: opacity 0.3s;
+    }
+
+    .edit-btn {
+        background-color: #28a745;
+    }
+
+    .delete-btn {
+        background-color: #dc3545;
+    }
+
+    .edit-btn:hover, .delete-btn:hover {
+        opacity: 0.9;
+        color: white;
+    }
+
+    .hotel-content {
+        display: grid;
+        gap: 30px;
+    }
+
+    .hotel-main-info {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+
+    .hotel-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .hotel-description {
+        padding: 30px;
+    }
+
+    .hotel-description h2 {
+        color: #003366;
+        margin: 0 0 20px;
+    }
+
+    .hotel-description p {
+        color: #666;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .hotel-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .info-card {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+
+    .info-card h3 {
+        color: #003366;
+        margin: 0 0 20px;
+    }
+
+    .info-card p {
+        color: #666;
+        margin: 0 0 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .room-type-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .room-type-item:last-child {
+        border-bottom: none;
+    }
+
+    .room-type-info h4 {
+        color: #003366;
+        margin: 0 0 5px;
+    }
+
+    .room-type-info p {
+        color: #666;
+        margin: 0;
+    }
+
+    .capacity {
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    .room-type-price {
+        text-align: right;
+    }
+
+    .room-type-price span {
+        color: #ff5a5f;
+        font-size: 1.5em;
+        font-weight: 600;
+    }
+
+    .room-type-price small {
+        color: #666;
+    }
+
+    .back-link {
+        margin-top: 30px;
+    }
+
+    .back-link a {
+        color: #666;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .back-link a:hover {
+        color: #003366;
+    }
+
+    @media (max-width: 768px) {
+        .hotel-header {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .owner-actions {
+            width: 100%;
+        }
+
+        .edit-btn, .delete-btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .hotel-image {
+            height: 300px;
+        }
+    }
+</style>
 {% endblock %}

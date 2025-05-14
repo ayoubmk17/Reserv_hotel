@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from profiles.views import profile_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),    
@@ -14,6 +15,8 @@ urlpatterns = [
     # Application URLs
     path('', include('hotel_app.urls')),
     path('', include('users_app.urls')),  # URLs d'authentification
+    path('profile/', profile_view, name='profile'),  # URL du profil
+    path('reservations/', include('reservations_app.urls')),  # URLs des réservations
 ]
 
 if settings.DEBUG:

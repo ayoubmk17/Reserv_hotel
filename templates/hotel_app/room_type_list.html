@@ -1,0 +1,261 @@
+<!-- hotel_app/templates/hotel_app/room_type_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="room-types-container">
+    <!-- Titre et bouton d'ajout -->
+    <div class="section-header">
+        <h1>Types de Chambres</h1>
+        <a href="{% url 'room-type-create' %}" class="add-type-btn">
+            <i class="fas fa-plus"></i> Ajouter un type de chambre
+        </a>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Grille des types de chambres -->
+    <div class="room-type-grid">
+        {% for room_type in room_types %}
+        <div class="room-type-card">
+            <div class="room-type-header">
+                <h3>{{ room_type.get_name_display }}</h3>
+                <div class="price-tag">
+                    <span>À partir de</span>
+                    <strong>{{ room_type.base_price }}€</strong>
+                    <span>/ nuit</span>
+                </div>
+            </div>
+            
+            <div class="room-type-content">
+                <p class="hotel-name">
+                    <i class="fas fa-hotel"></i>
+                    {{ room_type.hotel.name }}
+                </p>
+                
+                <div class="room-type-details">
+                    <p class="capacity">
+                        <i class="fas fa-user-friends"></i>
+                        Capacité: {{ room_type.capacity }} personne{% if room_type.capacity > 1 %}s{% endif %}
+                    </p>
+                    
+                    <div class="description">
+                        <p>{{ room_type.description }}</p>
+                    </div>
+                    
+                    {% if room_type.amenities %}
+                    <div class="amenities">
+                        <h4>Équipements:</h4>
+                        <p>{{ room_type.amenities }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if user.is_authenticated and user == room_type.hotel.owner %}
+                <div class="actions">
+                    <a href="{% url 'room-type-delete' room_type.pk %}" class="delete-btn">
+                        <i class="fas fa-trash-alt"></i> Supprimer
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-room-types">
+            <i class="fas fa-bed"></i>
+            <p>Aucun type de chambre disponible pour le moment.</p>
+            <a href="{% url 'room-type-create' %}" class="add-type-btn">
+                <i class="fas fa-plus"></i> Ajouter votre premier type de chambre
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .room-types-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .section-header h1 {
+        color: #003366;
+        margin: 0;
+        font-size: 2em;
+    }
+
+    .add-type-btn {
+        background-color: #ff5a5f;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.3s;
+    }
+
+    .add-type-btn:hover {
+        background-color: #ff4146;
+    }
+
+    .room-type-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        gap: 30px;
+    }
+
+    .room-type-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+
+    .room-type-header {
+        background: #003366;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .room-type-header h3 {
+        margin: 0;
+        font-size: 1.3em;
+    }
+
+    .price-tag {
+        text-align: right;
+    }
+
+    .price-tag strong {
+        display: block;
+        font-size: 1.5em;
+        color: #ff5a5f;
+    }
+
+    .room-type-content {
+        padding: 20px;
+    }
+
+    .hotel-name {
+        color: #666;
+        margin: 0 0 15px;
+        font-size: 1.1em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .capacity {
+        color: #666;
+        margin: 0 0 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .description {
+        color: #666;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .amenities {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+
+    .amenities h4 {
+        color: #003366;
+        margin: 0 0 10px;
+    }
+
+    .amenities p {
+        color: #666;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .delete-btn {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .delete-btn:hover {
+        background-color: #c82333;
+    }
+
+    .no-room-types {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 8px;
+        color: #666;
+    }
+
+    .no-room-types i {
+        font-size: 3em;
+        color: #003366;
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .section-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .room-type-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .room-type-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .price-tag {
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %} 

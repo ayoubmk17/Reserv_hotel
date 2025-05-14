@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="delete-container" style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <div class="delete-box" style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h1 style="color: #dc3545; margin-bottom: 20px; text-align: center;">Confirmer la suppression</h1>
+        
+        <div class="warning-message" style="background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <p style="margin: 0;">
+                <i class="fas fa-exclamation-triangle"></i>
+                Êtes-vous sûr de vouloir supprimer la chambre "{{ room.room_number }}" ?
+            </p>
+        </div>
+
+        <div class="room-info" style="margin-bottom: 30px;">
+            <h3 style="color: #003366; margin-bottom: 15px;">Informations sur la chambre</h3>
+            <p style="color: #666; margin: 0 0 5px;">
+                <strong>Numéro :</strong> {{ room.room_number }}
+            </p>
+            <p style="color: #666; margin: 0 0 5px;">
+                <strong>Type :</strong> {{ room.room_type.get_name_display }}
+            </p>
+            <p style="color: #666; margin: 0;">
+                <strong>Hôtel :</strong> {{ room.hotel.name }}
+            </p>
+        </div>
+
+        <div class="delete-warning" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <p style="margin: 0;">
+                <i class="fas fa-exclamation-circle"></i>
+                Cette action est irréversible. Toutes les réservations associées seront également supprimées.
+            </p>
+        </div>
+
+        <form method="POST" style="display: flex; gap: 10px; justify-content: center;">
+            {% csrf_token %}
+            <a href="{% url 'room-list' %}" class="btn-cancel" style="background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;">
+                <i class="fas fa-times"></i> Annuler
+            </a>
+            <button type="submit" class="btn-delete" style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+                <i class="fas fa-trash-alt"></i> Supprimer
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .btn-cancel:hover {
+        background-color: #5a6268 !important;
+    }
+    .btn-delete:hover {
+        background-color: #c82333 !important;
+    }
+</style>
+{% endblock %} 

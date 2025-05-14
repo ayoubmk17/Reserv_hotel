@@ -22,7 +22,11 @@
     <div class="hotel-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
         {% for hotel in hotels %}
         <div class="hotel-card" style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <img src="{{ hotel.image_url|default:'https://via.placeholder.com/300x200' }}" alt="{{ hotel.name }}" style="width: 100%; height: 200px; object-fit: cover;">
+            {% if hotel.image %}
+            <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" style="width: 100%; height: 200px; object-fit: cover;">
+            {% else %}
+            <img src="https://via.placeholder.com/400x300?text=Hotel+Image" alt="{{ hotel.name }}" style="width: 100%; height: 200px; object-fit: cover;">
+            {% endif %}
             <div style="padding: 20px;">
                 <h3 style="margin: 0 0 10px; color: #003366;">{{ hotel.name }}</h3>
                 <p style="color: #666; margin: 0 0 10px;">{{ hotel.city }}, {{ hotel.country }}</p>

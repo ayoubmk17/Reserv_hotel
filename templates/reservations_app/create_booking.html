@@ -1,0 +1,405 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="booking-container">
+    <div class="booking-header">
+        <h1>Réserver une chambre à {{ hotel.name }}</h1>
+        <p class="hotel-location">
+            <i class="fas fa-map-marker-alt"></i>
+            {{ hotel.city }}, {{ hotel.country }}
+        </p>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="booking-content">
+        <div class="booking-form-container">
+            <form method="post" class="booking-form">
+                {% csrf_token %}
+                
+                <div class="form-group dates-group">
+                    <div class="form-field">
+                        <label for="check_in">Date d'arrivée</label>
+                        <input type="date" id="check_in" name="check_in" required min="{{ today|date:'Y-m-d' }}">
+                    </div>
+                    <div class="form-field">
+                        <label for="check_out">Date de départ</label>
+                        <input type="date" id="check_out" name="check_out" required min="{{ tomorrow|date:'Y-m-d' }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-field">
+                        <label for="room_type">Type de chambre</label>
+                        <select id="room_type" name="room_type" required>
+                            <option value="">Sélectionnez un type de chambre</option>
+                            {% for room_type in room_types %}
+                            <option value="{{ room_type.id }}" data-price="{{ room_type.base_price }}" data-capacity="{{ room_type.capacity }}">
+                                {{ room_type.get_name_display }} - {{ room_type.base_price }}€/nuit
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group guests-group">
+                    <div class="form-field">
+                        <label for="adults">Adultes</label>
+                        <input type="number" id="adults" name="adults" min="1" value="1" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="children">Enfants</label>
+                        <input type="number" id="children" name="children" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-field">
+                        <label for="special_requests">Demandes spéciales</label>
+                        <textarea id="special_requests" name="special_requests" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="price-summary" style="display: none;">
+                    <h3>Résumé de la réservation</h3>
+                    <div class="price-details">
+                        <div class="price-row">
+                            <span>Prix par nuit:</span>
+                            <span class="price-per-night">0€</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Nombre de nuits:</span>
+                            <span class="nights-count">0</span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Total:</span>
+                            <span class="total-price">0€</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'hotel-detail' hotel.pk %}" class="cancel-btn">Annuler</a>
+                    <button type="submit" class="submit-btn">Réserver maintenant</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="booking-sidebar">
+            <div class="hotel-card">
+                {% if hotel.image %}
+                <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}">
+                {% else %}
+                <img src="https://via.placeholder.com/400x300?text=Hotel+Image" alt="{{ hotel.name }}">
+                {% endif %}
+                <div class="hotel-info">
+                    <h3>{{ hotel.name }}</h3>
+                    <p class="hotel-address">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ hotel.address }}
+                    </p>
+                    <p class="hotel-contact">
+                        <i class="fas fa-phone"></i>
+                        {{ hotel.phone }}
+                    </p>
+                    <p class="hotel-email">
+                        <i class="fas fa-envelope"></i>
+                        {{ hotel.email }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .booking-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .booking-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .booking-header h1 {
+        color: #003366;
+        margin: 0 0 10px;
+    }
+
+    .hotel-location {
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .booking-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
+
+    .booking-form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .dates-group, .guests-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-field label {
+        color: #003366;
+        font-weight: 500;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .form-field textarea {
+        resize: vertical;
+    }
+
+    .price-summary {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+    }
+
+    .price-summary h3 {
+        color: #003366;
+        margin: 0 0 15px;
+    }
+
+    .price-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        color: #666;
+    }
+
+    .price-row.total {
+        color: #003366;
+        font-weight: 600;
+        border-top: 1px solid #ddd;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .submit-btn, .cancel-btn {
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-size: 16px;
+        text-decoration: none;
+        text-align: center;
+        flex: 1;
+    }
+
+    .submit-btn {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #218838;
+    }
+
+    .cancel-btn {
+        background-color: #dc3545;
+        color: white;
+        transition: background-color 0.3s;
+    }
+
+    .cancel-btn:hover {
+        background-color: #c82333;
+    }
+
+    .booking-sidebar {
+        position: sticky;
+        top: 20px;
+        align-self: start;
+    }
+
+    .hotel-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+
+    .hotel-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .hotel-info {
+        padding: 20px;
+    }
+
+    .hotel-info h3 {
+        color: #003366;
+        margin: 0 0 15px;
+    }
+
+    .hotel-info p {
+        color: #666;
+        margin: 0 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .hotel-info p:last-child {
+        margin-bottom: 0;
+    }
+
+    .messages {
+        margin-bottom: 30px;
+    }
+
+    .alert {
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    @media (max-width: 768px) {
+        .booking-content {
+            grid-template-columns: 1fr;
+        }
+
+        .dates-group, .guests-group {
+            grid-template-columns: 1fr;
+        }
+
+        .booking-sidebar {
+            position: static;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.booking-form');
+    const checkInInput = document.getElementById('check_in');
+    const checkOutInput = document.getElementById('check_out');
+    const roomTypeSelect = document.getElementById('room_type');
+    const priceSummary = document.querySelector('.price-summary');
+    const pricePerNight = document.querySelector('.price-per-night');
+    const nightsCount = document.querySelector('.nights-count');
+    const totalPrice = document.querySelector('.total-price');
+
+    function updatePriceSummary() {
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        const selectedOption = roomTypeSelect.selectedOptions[0];
+
+        if (checkIn && checkOut && selectedOption) {
+            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            const pricePerNightValue = parseFloat(selectedOption.dataset.price);
+            
+            if (nights > 0 && pricePerNightValue) {
+                priceSummary.style.display = 'block';
+                pricePerNight.textContent = pricePerNightValue + '€';
+                nightsCount.textContent = nights;
+                totalPrice.textContent = (nights * pricePerNightValue) + '€';
+            }
+        }
+    }
+
+    checkInInput.addEventListener('change', function() {
+        // Set minimum check-out date to the day after check-in
+        const checkIn = new Date(this.value);
+        const minCheckOut = new Date(checkIn);
+        minCheckOut.setDate(minCheckOut.getDate() + 1);
+        checkOutInput.min = minCheckOut.toISOString().split('T')[0];
+        
+        // Reset check-out if it's before new minimum
+        if (checkOutInput.value && new Date(checkOutInput.value) <= checkIn) {
+            checkOutInput.value = minCheckOut.toISOString().split('T')[0];
+        }
+        
+        updatePriceSummary();
+    });
+
+    checkOutInput.addEventListener('change', updatePriceSummary);
+    roomTypeSelect.addEventListener('change', updatePriceSummary);
+
+    form.addEventListener('submit', function(e) {
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        const selectedOption = roomTypeSelect.selectedOptions[0];
+        const adults = parseInt(document.getElementById('adults').value);
+        const capacity = parseInt(selectedOption.dataset.capacity);
+
+        if (checkOut <= checkIn) {
+            e.preventDefault();
+            alert('La date de départ doit être postérieure à la date d'arrivée.');
+        }
+
+        if (adults > capacity) {
+            e.preventDefault();
+            alert(`Ce type de chambre a une capacité maximale de ${capacity} personne(s).`);
+        }
+    });
+});
+</script>
+{% endblock %} 

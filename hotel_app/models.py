@@ -10,19 +10,21 @@ class Hotel(models.Model):
     country = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
+    image = models.ImageField(upload_to='hotels/', null=True, blank=True)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.name
 
 class RoomType(models.Model):
-    SINGLE = 'single'
-    DOUBLE = 'double'
-    SUITE = 'suite'
+    STANDARD = 'standard'
+    DELUXE = 'deluxe'
+    PRESIDENTIELLE = 'presidentielle'
     
     TYPE_CHOICES = (
-        (SINGLE, 'Single'),
-        (DOUBLE, 'Double'),
-        (SUITE, 'Suite'),
+        (STANDARD, 'Chambre Standard'),
+        (DELUXE, 'Chambre Deluxe'),
+        (PRESIDENTIELLE, 'Suite Présidentielle'),
     )
     
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='room_types')
