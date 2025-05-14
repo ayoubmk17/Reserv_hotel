@@ -2,6 +2,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Bienvenue sur notre plateforme</h1>
-<p>Gestion des réservations hôtelières</p>
+<div class="hero-section" style="text-align: center; padding: 60px 20px; background-color: #f8f9fa;">
+    <h1 style="color: #003366; font-size: 2.5em; margin-bottom: 20px;">Trouvez l'hôtel parfait pour votre séjour</h1>
+    <p style="color: #666; font-size: 1.2em; margin-bottom: 30px;">Des milliers d'hôtels vous attendent pour des moments inoubliables</p>
+    
+    <form action="{% url 'hotel-list' %}" method="get" class="search-form" style="max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <input type="text" name="city" placeholder="Ville" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+            <input type="date" name="check_in" style="padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+            <input type="date" name="check_out" style="padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+            <button type="submit" style="padding: 12px 24px; background-color: #ff5a5f; color: white; border: none; border-radius: 4px; cursor: pointer;">Rechercher</button>
+        </div>
+    </form>
+</div>
+
+<div class="featured-hotels" style="padding: 40px 20px;">
+    <h2 style="text-align: center; color: #003366; margin-bottom: 30px;">Hôtels populaires</h2>
+    
+    <div class="hotel-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+        {% for hotel in hotels %}
+        <div class="hotel-card" style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <img src="{{ hotel.image_url|default:'https://via.placeholder.com/300x200' }}" alt="{{ hotel.name }}" style="width: 100%; height: 200px; object-fit: cover;">
+            <div style="padding: 20px;">
+                <h3 style="margin: 0 0 10px; color: #003366;">{{ hotel.name }}</h3>
+                <p style="color: #666; margin: 0 0 10px;">{{ hotel.city }}, {{ hotel.country }}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #ff5a5f; font-weight: 600;">À partir de {{ hotel.min_price }}€</span>
+                    <a href="{% url 'hotel-detail' hotel.id %}" style="background-color: #003366; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">Voir détails</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p style="text-align: center; grid-column: 1/-1; color: #666;">Aucun hôtel disponible pour le moment.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="features-section" style="background-color: #f8f9fa; padding: 60px 20px; text-align: center;">
+    <h2 style="color: #003366; margin-bottom: 40px;">Pourquoi nous choisir ?</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+        <div class="feature">
+            <i class="fas fa-hotel" style="font-size: 2em; color: #ff5a5f; margin-bottom: 20px;"></i>
+            <h3 style="color: #003366; margin-bottom: 10px;">Large choix d'hôtels</h3>
+            <p style="color: #666;">Des milliers d'hôtels pour tous les budgets</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-shield-alt" style="font-size: 2em; color: #ff5a5f; margin-bottom: 20px;"></i>
+            <h3 style="color: #003366; margin-bottom: 10px;">Réservation sécurisée</h3>
+            <p style="color: #666;">Paiement sécurisé et confirmation instantanée</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-headset" style="font-size: 2em; color: #ff5a5f; margin-bottom: 20px;"></i>
+            <h3 style="color: #003366; margin-bottom: 10px;">Support 24/7</h3>
+            <p style="color: #666;">Une équipe à votre service à tout moment</p>
+        </div>
+    </div>
+</div>
 {% endblock %}

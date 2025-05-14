@@ -11,7 +11,9 @@ urlpatterns = [
     path('api/reservations/', include('reservations_app.urls')),
     path('api/reviews/', include('reviews_app.urls')),
     path('api/promotions/', include('promotions_app.urls')),
+    # Application URLs
     path('', include('hotel_app.urls')),
+    path('', include('users_app.urls')),  # URLs d'authentification
 ]
 
 if settings.DEBUG:
