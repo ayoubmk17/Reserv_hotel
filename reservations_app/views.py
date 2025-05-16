@@ -7,6 +7,8 @@ from django.contrib import messages
 from hotel_app.models import Hotel, RoomType, Room
 from datetime import datetime, timedelta
 from decimal import Decimal
+from django.utils import timezone
+from .forms import BookingForm, PaymentForm
 
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
@@ -27,13 +29,130 @@ class PaymentViewSet(viewsets.ModelViewSet):
 # Vues pour l'interface web
 @login_required
 def booking_list(request):
-    bookings = Booking.objects.filter(user=request.user)
-    return render(request, 'reservations_app/booking_list.html', {'bookings': bookings})
+    if request.user.role == 1:  # Client
+        bookings = Booking.objects.filter(user=request.user)
+    elif request.user.role == 2:  # Hotelier
+        bookings = Booking.objects.filter(room__hotel__owner=request.user)
+    else:
+        bookings = Booking.objects.none()
+    
+    return render(request, 'reservations_app/booking_list.html', {
+        'bookings': bookings
+    })
 
 @login_required
 def booking_detail(request, pk):
-    booking = get_object_or_404(Booking, pk=pk, user=request.user)
-    return render(request, 'reservations_app/booking_detail.html', {'booking': booking})
+    booking = get_object_or_404(Booking, pk=pk)
+    # Vérifier que l'utilisateur a le droit de voir cette réservation
+    if not (request.user == booking.user or request.user == booking.room.hotel.owner):
+        messages.error(request, "Vous n'avez pas la permission de voir cette réservation.")
+        return redirect('reservations:booking-list')
+    
+    return render(request, 'reservations_app/booking_detail.html', {
+        'booking': booking
+    })
+
+@login_required
+def booking_create(request):
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.user = request.user
+            booking.save()
+            messages.success(request, "Votre réservation a été créée avec succès.")
+            return redirect('reservations:booking-detail', pk=booking.pk)
+    else:
+        form = BookingForm()
+    
+    return render(request, 'reservations_app/booking_form.html', {
+        'form': form,
+        'title': 'Nouvelle réservation'
+    })
+
+@login_required
+def booking_update(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    if not (request.user == booking.user or request.user == booking.room.hotel.owner):
+        messages.error(request, "Vous n'avez pas la permission de modifier cette réservation.")
+        return redirect('reservations:booking-list')
+    
+    if request.method == 'POST':
+        form = BookingForm(request.POST, instance=booking)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "La réservation a été mise à jour avec succès.")
+            return redirect('reservations:booking-detail', pk=booking.pk)
+    else:
+        form = BookingForm(instance=booking)
+    
+    return render(request, 'reservations_app/booking_form.html', {
+        'form': form,
+        'booking': booking,
+        'title': 'Modifier la réservation'
+    })
+
+@login_required
+def booking_delete(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    if not (request.user == booking.user or request.user == booking.room.hotel.owner):
+        messages.error(request, "Vous n'avez pas la permission de supprimer cette réservation.")
+        return redirect('reservations:booking-list')
+    
+    if request.method == 'POST':
+        booking.delete()
+        messages.success(request, "La réservation a été supprimée avec succès.")
+        return redirect('reservations:booking-list')
+    
+    return render(request, 'reservations_app/booking_confirm_delete.html', {
+        'booking': booking
+    })
+
+@login_required
+def booking_cancel(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    if not (request.user == booking.user or request.user == booking.room.hotel.owner):
+        messages.error(request, "Vous n'avez pas la permission d'annuler cette réservation.")
+        return redirect('reservations:booking-list')
+    
+    booking.status = Booking.CANCELLED
+    booking.save()
+    messages.success(request, "La réservation a été annulée avec succès.")
+    return redirect('reservations:booking-detail', pk=booking.pk)
+
+@login_required
+def payment_create(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id)
+    if request.user != booking.user:
+        messages.error(request, "Vous n'avez pas la permission d'effectuer ce paiement.")
+        return redirect('reservations:booking-list')
+    
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            payment = form.save(commit=False)
+            payment.booking = booking
+            payment.save()
+            messages.success(request, "Le paiement a été effectué avec succès.")
+            return redirect('reservations:booking-detail', pk=booking.pk)
+    else:
+        form = PaymentForm(initial={'amount': booking.total_price})
+    
+    return render(request, 'reservations_app/payment_form.html', {
+        'form': form,
+        'booking': booking
+    })
+
+@login_required
+def payment_detail(request, pk):
+    payment = get_object_or_404(Payment, pk=pk)
+    if not (request.user == payment.booking.user or request.user == payment.booking.room.hotel.owner):
+        messages.error(request, "Vous n'avez pas la permission de voir ce paiement.")
+        return redirect('reservations:booking-list')
+    
+    return render(request, 'reservations_app/payment_detail.html', {
+        'payment': payment
+    })
 
 @login_required
 def create_booking(request, hotel_id):

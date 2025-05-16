@@ -78,7 +78,7 @@
                             <i class="fas fa-eye"></i> Voir détails
                         </a>
                         {% if user.is_authenticated and user_role == 1 %}
-                        <a href="{% url 'create-booking' hotel.pk %}" class="book-now-btn">
+                        <a href="{% url 'reservations:create-booking' hotel.pk %}" class="book-now-btn">
                             <i class="fas fa-calendar-check"></i> Réserver
                         </a>
                         {% endif %}
