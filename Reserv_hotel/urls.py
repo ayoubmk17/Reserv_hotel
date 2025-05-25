@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from profiles.views import profile_view
+from hotel_app.views import contact
 
 urlpatterns = [
     path('admin/', admin.site.urls),    
@@ -17,6 +18,7 @@ urlpatterns = [
     path('', include('users_app.urls')),  # URLs d'authentification
     path('profile/', profile_view, name='profile'),  # URL du profil
     path('reservations/', include('reservations_app.urls')),  # URLs des réservations
+    path('contact/', contact, name='contact'),
 ]
 
 if settings.DEBUG:

@@ -13,7 +13,7 @@
         </div>
         <div class="header-actions">
             {% if user.is_authenticated and user.role == 1 %}
-            <a href="{% url 'create-booking' hotel.pk %}" class="book-now-btn">
+            <a href="{% url 'reservations:create-booking' hotel.pk %}" class="book-now-btn">
                 <i class="fas fa-calendar-check"></i> Réserver maintenant
             </a>
             {% endif %}

@@ -24,4 +24,5 @@ urlpatterns = [
     
     # API
     path('api/room-types/<int:hotel_id>/', get_room_types, name='get-room-types'),
+    path('contact/', contact, name='contact'),
 ]

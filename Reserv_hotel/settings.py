@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-s2ahli05-%+8rels-2!u9mhelhd7xsl0yn6jxi@d@fr_9sf*(t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # En développement seulement
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'reviews_app',
     'promotions_app',
     'profiles',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,9 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'users_app.User'
+
+# Configuration pour le développement
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

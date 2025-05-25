@@ -249,3 +249,6 @@ def toggle_room_availability(request, pk):
     return JsonResponse({
         'is_available': room.is_available
     })
+
+def contact(request):
+    return render(request, 'contact.html')

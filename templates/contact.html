@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="contact-container" style="max-width: 800px; margin: 40px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h1 style="color: #003366; text-align: center; margin-bottom: 30px;">Contactez-nous</h1>
+    <div style="display: flex; flex-wrap: wrap; gap: 40px;">
+        <div style="flex: 1 1 300px;">
+            <h3 style="color: #003366;">Formulaire de contact</h3>
+            <form method="post" style="display: flex; flex-direction: column; gap: 15px;">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name" style="color: #666;">Nom</label>
+                    <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div class="form-group">
+                    <label for="email" style="color: #666;">Email</label>
+                    <input type="email" id="email" name="email" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div class="form-group">
+                    <label for="message" style="color: #666;">Message</label>
+                    <textarea id="message" name="message" rows="5" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <button type="submit" style="background-color: #003366; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Envoyer</button>
+            </form>
+        </div>
+        <div style="flex: 1 1 250px; background: #f4f8fb; border-radius: 8px; padding: 20px;">
+            <h3 style="color: #003366;">Nos coordonnées</h3>
+            <p><i class="fas fa-map-marker-alt"></i> 1er Plateforme de réservation d'hôtels de maroc</p>
+            <p><i class="fas fa-envelope"></i> contact@reservationhotel.com</p>
+            <p><i class="fas fa-phone"></i> +212 608508060</p>
+            <div style="margin-top: 20px;">
+                <h4 style="color: #003366;">Suivez-nous</h4>
+                <a href="#" style="margin-right: 10px; color: #003366;"><i class="fab fa-facebook fa-lg"></i></a>
+                <a href="#" style="margin-right: 10px; color: #003366;"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" style="color: #003366;"><i class="fab fa-instagram fa-lg"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
