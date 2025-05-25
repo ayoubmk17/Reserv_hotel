@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Réservation Hôtel{% endblock %}</title>
+    <title>{% block title %}BookNGO{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <!-- Ajout de Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -191,12 +191,22 @@
                 width: 100%;
             }
         }
+        .logo-bookngo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #ff5a5f;
+            margin-right: 25px;
+            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
     </style>
 </head>
 <body>
     <header>
         <nav>
             <div class="nav-links">
+                <span class="logo-bookngo">BookNGO</span>
                 <a href="/">Accueil</a>
                 <a href="{% url 'hotel-list' %}">Hôtels</a>
                 {% if user.is_authenticated and user.role == 2 %}
@@ -255,7 +265,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Réservation Hôtel. Tous droits réservés.</p>
+        <p>&copy; 2025 BookNGO. Tous droits réservés.</p>
     </footer>
 </body>
 </html>
