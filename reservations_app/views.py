@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from django.utils import timezone
 from .forms import BookingForm, PaymentForm
+from django.urls import reverse
 
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
@@ -204,7 +205,7 @@ def create_booking(request, hotel_id):
         available_room.save()
 
         messages.success(request, 'Votre réservation a été créée avec succès! Vous recevrez bientôt une confirmation.')
-        return redirect('booking-detail', pk=booking.pk)
+        return redirect('reservations:booking-detail', pk=booking.pk)
 
     return render(request, 'reservations_app/create_booking.html', {
         'hotel': hotel,
@@ -212,3 +213,14 @@ def create_booking(request, hotel_id):
         'today': today,
         'tomorrow': tomorrow,
     })
+
+@login_required
+def fake_payment(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    if request.method == 'POST':
+        # Simuler le paiement et changer le statut
+        booking.status = 'payed'
+        booking.save()
+        messages.success(request, 'Paiement effectué avec succès !')
+        return redirect('reservations:booking-list')
+    return render(request, 'reservations_app/fake_payment.html', {'booking': booking})

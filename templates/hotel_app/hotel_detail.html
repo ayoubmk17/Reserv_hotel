@@ -17,7 +17,7 @@
                 <i class="fas fa-calendar-check"></i> Réserver maintenant
             </a>
             {% endif %}
-            {% if user.is_authenticated and user == hotel.owner %}
+            {% if user.is_authenticated and user.is_superuser or user == hotel.owner %}
             <div class="owner-actions">
                 <a href="{% url 'hotel-update' hotel.pk %}" class="edit-btn">
                     <i class="fas fa-edit"></i> Modifier

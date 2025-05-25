@@ -60,9 +60,7 @@ def hotel_create(request):
 @login_required
 def hotel_update(request, pk):
     hotel = get_object_or_404(Hotel, pk=pk)
-    
-    # Vérifier que l'utilisateur est le propriétaire
-    if hotel.owner != request.user:
+    if not (request.user.is_superuser or hotel.owner == request.user):
         messages.error(request, "Vous n'avez pas la permission de modifier cet hôtel.")
         return redirect('hotel-list')
     
@@ -84,9 +82,7 @@ def hotel_update(request, pk):
 @login_required
 def hotel_delete(request, pk):
     hotel = get_object_or_404(Hotel, pk=pk)
-    
-    # Vérifier que l'utilisateur est le propriétaire
-    if hotel.owner != request.user:
+    if not (request.user.is_superuser or hotel.owner == request.user):
         messages.error(request, "Vous n'avez pas la permission de supprimer cet hôtel.")
         return redirect('hotel-list')
     
@@ -154,9 +150,7 @@ def room_create(request):
 @login_required
 def room_delete(request, pk):
     room = get_object_or_404(Room, pk=pk)
-    
-    # Vérifier que l'utilisateur est le propriétaire de l'hôtel
-    if room.hotel.owner != request.user:
+    if not (request.user.is_superuser or room.hotel.owner == request.user):
         messages.error(request, "Vous n'avez pas la permission de supprimer cette chambre.")
         return redirect('room-list')
     
@@ -208,9 +202,7 @@ def room_type_list(request):
 @login_required
 def room_type_delete(request, pk):
     room_type = get_object_or_404(RoomType, pk=pk)
-    
-    # Vérifier que l'utilisateur est le propriétaire de l'hôtel
-    if room_type.hotel.owner != request.user:
+    if not (request.user.is_superuser or room_type.hotel.owner == request.user):
         messages.error(request, "Vous n'avez pas la permission de supprimer ce type de chambre.")
         return redirect('room-type-list')
     

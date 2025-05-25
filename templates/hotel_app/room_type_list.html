@@ -59,7 +59,7 @@
                     {% endif %}
                 </div>
                 
-                {% if user.is_authenticated and user == room_type.hotel.owner %}
+                {% if user.is_authenticated and user.is_superuser or user == room_type.hotel.owner %}
                 <div class="actions">
                     <a href="{% url 'room-type-delete' room_type.pk %}" class="delete-btn">
                         <i class="fas fa-trash-alt"></i> Supprimer

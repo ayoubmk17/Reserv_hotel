@@ -19,4 +19,5 @@ urlpatterns = [
     # URLs pour les paiements
     path('payment/<int:booking_id>/create/', views.payment_create, name='payment-create'),
     path('payment/<int:pk>/', views.payment_detail, name='payment-detail'),
+    path('booking/<int:pk>/pay/', views.fake_payment, name='booking-pay'),
 ]
