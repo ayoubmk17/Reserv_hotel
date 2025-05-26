@@ -73,7 +73,7 @@
             </div>
 
             <div class="room-actions">
-                {% if user.is_authenticated and user == room.hotel.owner %}
+                {% if user.is_authenticated and user.is_superuser or user == room.hotel.owner %}
                 <button class="toggle-availability-btn {% if room.is_available %}available{% else %}occupied{% endif %}"
                         data-room-id="{{ room.id }}"
                         data-url="{% url 'room-toggle-availability' room.id %}">
