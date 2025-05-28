@@ -26,11 +26,17 @@ def run():
         ("Hôtel 551615244", "Hôtel générique.", "Adresse inconnue", "Ville", "Pays", "hotel551@example.com", "+3300000010", 100.00),
     ]
 
+    room_types = [
+        ('standard', 'Chambre standard confortable.', 2, 0.0, 'WiFi, TV, Climatisation'),
+        ('deluxe', 'Chambre deluxe spacieuse avec vue.', 3, 30.0, 'WiFi, TV, Climatisation, Mini-bar, Balcon'),
+        ('presidentielle', 'Suite présidentielle luxueuse.', 4, 80.0, 'WiFi, TV, Climatisation, Jacuzzi, Terrasse, Service VIP'),
+    ]
+
     for i, image in enumerate(images):
         if i >= len(hotel_data):
             break
         name, description, address, city, country, email, phone, base_price = hotel_data[i]
-        image_path = os.path.join('hotels', image)
+        image_path = f"hotels/{image}"
         hotel, created = Hotel.objects.get_or_create(
             name=name,
             defaults={
@@ -45,32 +51,35 @@ def run():
                 'owner': owner,
             }
         )
+        if hotel.image.name != image_path:
+            hotel.image = image_path
+            hotel.save()
+            print(f"Chemin image corrigé pour {hotel.name} : {hotel.image}")
         if created:
             print(f"Hôtel créé : {hotel.name}")
         else:
             print(f"Hôtel déjà existant : {hotel.name}")
-        # Créer un RoomType
-        room_type, _ = RoomType.objects.get_or_create(
-            hotel=hotel,
-            name='standard',
-            defaults={
-                'description': 'Chambre standard confortable.',
-                'base_price': base_price,
-                'capacity': 2,
-                'amenities': 'WiFi, TV, Climatisation',
-            }
-        )
-        # Créer une Room
-        Room.objects.get_or_create(
-            hotel=hotel,
-            room_type=room_type,
-            room_number=f"{i+1}01",
-            floor=i+1,
-            defaults={
-                'is_available': True
-            }
-        )
-        print(f"Chambre ajoutée à l'hôtel {hotel.name}")
+        for idx, (rtype, rdesc, capacity, price_add, amenities) in enumerate(room_types):
+            rt, _ = RoomType.objects.get_or_create(
+                hotel=hotel,
+                name=rtype,
+                defaults={
+                    'description': rdesc,
+                    'base_price': base_price + price_add,
+                    'capacity': capacity,
+                    'amenities': amenities,
+                }
+            )
+            Room.objects.get_or_create(
+                hotel=hotel,
+                room_type=rt,
+                room_number=f"{i+1}{idx+1}01",
+                floor=idx+1,
+                defaults={
+                    'is_available': True
+                }
+            )
+            print(f"Chambre {rtype} ajoutée à l'hôtel {hotel.name}")
 
 if __name__ == "__main__":
     run() 
